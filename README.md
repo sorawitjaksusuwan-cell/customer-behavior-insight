@@ -1,36 +1,61 @@
 # Customer Behavior Insight Dashboard
 
-Analysis of customer churn, purchase frequency, and retention behavior using SQL and Python, visualized in an interactive Power BI dashboard — Data Analytics Bootcamp (Sprint 2).
+Analysis of customer churn and purchase frequency behavior using SQL, Python, and a dimensional data model, visualized in an interactive Power BI dashboard — Data Analytics Bootcamp (Sprint 2, group project).
 
 ## Business Problem
 
-- The business relies on repeat purchases, but has no clear view of **which customer segments are at highest risk of churn** or how long it typically takes before a customer goes inactive.
-- Without this visibility, retention efforts and marketing spend cannot be targeted effectively — the business ends up treating all customers the same, when risk actually varies sharply by segment.
+- The business relies on repeat purchases, but has no clear view of **which customer segments are at highest risk of churn** or how purchase frequency differs across segments and regions.
+- Without this visibility, retention efforts and marketing spend cannot be targeted effectively — the business ends up treating all customers the same, when churn risk actually varies sharply by segment.
 
 ## Hypothesis
 
 1. Customer segment (High Activity, Mid Activity, Low Activity, Power User) is associated with different churn rates.
-2. Retention drops off in the months immediately following a customer's first purchase, and the drop-off rate differs by segment.
+2. Purchase frequency (days between purchases) differs meaningfully by customer segment, more so than by region.
 
 ## Data & Tools
 
 - **Tools:** SQL (JOIN, Subquery, CTE), Python (pandas, seaborn, matplotlib), Power BI
-- **Data:** ~2,220 customers and their order-line history, including first/last order date, recency, tenure, discount sensitivity, and region
-- **Data preparation:** Data quality checks and cleaning performed on SQL extracts; customer-level and order-level tables modeled using a Star Schema before analysis
+- **Data:** Customer transaction records modeled in a Star Schema
+- **Data model:**
+  - **Fact_Transactions** — grain: 1 row per order line; measures: `line_amount`, `qty`, `gross_profit`, `discount_pct`; keys: `customer_id` (FK), `product_id` (FK)
+  - **Dim_Customer** — `customer_id` (PK), `region`, `customer_segment`, `discount_sensitivity`
+  - **Dim_Customer_behavior** — `customer_id` (PK), `recency_days`, `tenure_day`, `frequency`
+  - **Dim_Customer_Discount** — `customer_id` (PK), `discount_sensitivity`, `discount_pct`
+  - **Dim_Product** — `product_id` (PK)
+
+![Star Schema](star_schema.png)
 
 ## Approach
 
-1. Defined churn using purchase-recency thresholds (percentile-based: customers with 80+ days between purchases flagged as churned) and calculated a churn rate per customer
-2. Built a **cohort retention analysis** in Python — grouped customers by their first-purchase month and tracked what % of each cohort was still active in each following month
-3. Segmented customers (High Activity, Mid Activity, Low Activity, Power User) and compared churn and retention patterns across segments and regions
-4. Visualized churn drivers (purchase frequency, average order value) and retention curves using seaborn heatmaps and line charts
-5. Brought the key metrics into an interactive Power BI dashboard for stakeholder-facing reporting
+1. Modeled customer transaction data into a Star Schema (above) to support efficient, structured querying
+2. Wrote SQL to extract and quality-check transaction and customer data before analysis
+3. Calculated **days between purchase** per customer and examined its distribution overall, and split by segment and region
+4. Defined churn using percentile-based thresholds on days-between-purchase (80th percentile = "churned", 50th percentile = "early churn") and compared churn rates across segment x region
+5. Visualized results with seaborn heatmaps and distribution plots, then brought key metrics into an interactive Power BI dashboard
 
 ## Key Insight
 
-- **Churn risk varies sharply by segment:** early-churn rate is 82.9% for Low Activity customers vs. only 9.5% for Power Users — an ~8x gap, showing that "customer" is too broad a category to target retention efforts effectively.
-- **Retention concentrates the risk early:** by month 1 after first purchase, Power User retention is already 43.6% vs. just 5.2% for Low Activity — most of the churn risk materializes almost immediately rather than gradually.
-- **Purchase frequency matters more than spend:** churn rate correlates more closely with how often a customer buys than with their average order value, suggesting frequency-based triggers (e.g., a follow-up nudge after a customer's typical purchase window passes) would be a more effective retention lever than discount-based offers alone.
+**Purchase frequency splits cleanly by segment, not by region:**
+
+![Distribution by segment](Distribution_of_Days_Between_Purchase_by_Customer_Segment_with_Segment-Specific_Percentiles.png)
+
+- Median days-between-purchase ranges from 48 days (Power User) to 174 days (Low Activity) — a ~3.6x gap
+- By contrast, the median across regions is nearly flat (71-79 days):
+
+![Distribution by region](Distribution_of_Days_Between_Purchase_by_Region_with_Region-Specific_Percentiles.png)
+
+- **Conclusion:** customer segment, not geography, is the meaningful driver of purchase frequency — retention strategy should be segmented by behavior, not rolled out uniformly by region
+
+**Churn risk is concentrated almost entirely in one segment:**
+
+![Early churn heatmap](Early_Churn_Percentage_by_Customer_Segment_and_Region.png)
+
+- Early-churn rate: Low Activity 75-84% vs. Power User only 6-11% — consistent across all four regions
+- Using a stricter 80th-percentile churn threshold, the gap is even sharper: Low Activity ~55-57% vs. High Activity and Power User both ~0%:
+
+![Churn percentage heatmap](Churn_Percentage_by_Customer_Segment_and_Region.png)
+
+- **Conclusion:** Low Activity customers are the clear priority for retention intervention — the risk is not evenly spread across the customer base, and region does not meaningfully change the picture
 
 ## Dashboard
 
@@ -38,4 +63,4 @@ Analysis of customer churn, purchase frequency, and retention behavior using SQL
 
 ## Links
 
-- [Notebook (churn & cohort retention analysis)](#) <!-- add exported .ipynb link once uploaded to the repo -->
+- [Notebook (churn & purchase frequency analysis)](#) <!-- add link once .ipynb is uploaded to the repo -->
