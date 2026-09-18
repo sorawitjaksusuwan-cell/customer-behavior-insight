@@ -56,11 +56,3 @@ Analysis of customer churn and purchase frequency behavior using SQL, Python, an
 ![Churn percentage heatmap](Churn_Percentage_by_Customer_Segment_and_Region.png)
 
 - **Conclusion:** Low Activity customers are the clear priority for retention intervention — the risk is not evenly spread across the customer base, and region does not meaningfully change the picture
-
-## Dashboard
-
-<!-- Add dashboard screenshot here, e.g. ![Dashboard](dashboard.png) -->
-
-## Links
-
-- [Notebook (churn & purchase frequency analysis)](#) <!-- add link once .ipynb is uploaded to the repo -->
