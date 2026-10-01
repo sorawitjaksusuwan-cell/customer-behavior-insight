@@ -14,7 +14,7 @@ Analysis of customer churn and purchase frequency behavior using SQL, Python, an
 
 ## Data & Tools
 
-- **Tools:** SQL (JOIN, Subquery, CTE), Python (pandas, seaborn, matplotlib), Power BI
+- **Tools:** SQL (JOIN, Subquery, CTE), Python (pandas, seaborn, matplotlib)
 - **Data:** Customer transaction records modeled in a Star Schema
 - **Data model:**
   - **Fact_Transactions** — grain: 1 row per order line; measures: `line_amount`, `qty`, `gross_profit`, `discount_pct`; keys: `customer_id` (FK), `product_id` (FK)
