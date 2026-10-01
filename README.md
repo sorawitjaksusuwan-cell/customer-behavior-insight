@@ -1,6 +1,6 @@
 # Customer Behavior Insight Dashboard
 
-Analysis of customer churn and purchase frequency behavior using SQL, Python, and a dimensional data model, visualized in an interactive Power BI dashboard — Data Analytics Bootcamp (Sprint 2, group project).
+Analysis of customer churn and purchase frequency behavior using SQL, Python, and a dimensional data model, visualized in  Python Dashboard — Data Analytics Bootcamp (Sprint 2, group project).
 
 ## Business Problem
 
